@@ -2,6 +2,7 @@ const { ApolloServer, gql } = require("apollo-server");
 const products = [
   {
     id: "53a0724c-a416-4cac-ae45-bfaedce1f147",
+    categoryId: "c01b1ff4-f894-4ef2-b27a-22aacc2fca70",
     name: "Steel Pot",
     description: "Silver steel pot that is perfect for cooking",
     quantity: 230,
@@ -11,6 +12,7 @@ const products = [
   },
   {
     id: "c2af9adc-d0b8-4d44-871f-cef66f86f7f6",
+    categoryId: "c01b1ff4-f894-4ef2-b27a-22aacc2fca70",
     name: "Salad Bowl",
     description: "Round wooden bowl perfect for tossing and making salads",
     quantity: 33,
@@ -20,6 +22,7 @@ const products = [
   },
   {
     id: "2c931e7e-510f-49e5-aed6-d6b44087e5a1",
+    categoryId: "34115aac-0ff5-4859-8f43-10e8db23602b",
     name: "Spoon",
     description: "Small and delicate spoon",
     quantity: 4266,
@@ -29,6 +32,7 @@ const products = [
   },
   {
     id: "404daf2a-9b97-4b99-b9af-614d07f818d7",
+    categoryId: "34115aac-0ff5-4859-8f43-10e8db23602b",
     name: "Shovel",
     description: "Grey rounded shovel for digging",
     quantity: 753,
@@ -38,6 +42,7 @@ const products = [
   },
   {
     id: "6379c436-9fad-4b3f-a427-2d7241f5c1b1",
+    categoryId: "34115aac-0ff5-4859-8f43-10e8db23602b",
     name: "Fertilizer",
     description: "Nitrogen based fertitlizer",
     quantity: 53453,
@@ -47,6 +52,7 @@ const products = [
   },
   {
     id: "f01bcdec-6783-464e-8f9e-8416830f7569",
+    categoryId: "d914aec0-25b2-4103-9ed8-225d39018d1d",
     name: "Basketball",
     description: "Outdoor or indoor basketball",
     quantity: 128,
@@ -56,6 +62,7 @@ const products = [
   },
   {
     id: "a4824a31-5c83-42af-8c1b-6e2461aae1ef",
+    categoryId: "d914aec0-25b2-4103-9ed8-225d39018d1d",
     name: "Golf Clubs",
     description: "Good for golfing",
     quantity: 3,
@@ -65,6 +72,7 @@ const products = [
   },
   {
     id: "b553085a-a7e0-4c9b-8a12-f971919c3683",
+    categoryId: "d914aec0-25b2-4103-9ed8-225d39018d1d",
     name: "Baseball Gloves",
     description: "Professional catcher gloves",
     quantity: 745,
@@ -74,6 +82,7 @@ const products = [
   },
   {
     id: "47bf3941-9c8b-42c0-9c72-7f3985492a5b",
+    categoryId: "d914aec0-25b2-4103-9ed8-225d39018d1d",
     name: "Soccer Ball",
     description: "Round ball",
     quantity: 734,
@@ -82,12 +91,28 @@ const products = [
     onSale: false,
   },
 ];
+const categories = [
+  {
+    id: "c01b1ff4-f894-4ef2-b27a-22aacc2fca70",
+    name: "Kitchen",
+  },
+  {
+    id: "34115aac-0ff5-4859-8f43-10e8db23602b",
+    name: "Garden",
+  },
+  {
+    id: "d914aec0-25b2-4103-9ed8-225d39018d1d",
+    name: "Sports",
+  },
+];
 
 const typeDefs = gql`
   type Query {
     hello: String
     products: [Product!]!
     product(id: ID!): Product
+    categories: [Category!]!
+    category(id: ID!): Category
   }
   type Product {
     name: String!
@@ -96,6 +121,12 @@ const typeDefs = gql`
     image: String!
     Price: Float!
     onSale: Boolean!
+  }
+
+  type Category {
+    id: ID!
+    name: String!
+    products: [Product!]!
   }
 `;
 
@@ -106,7 +137,19 @@ const resolvers = {
     hello: () => "world",
     products: () => products,
     product: (parent, args, context) => {
-      console.log(args);
+      const { id } = args;
+      return (product = products.find((product) => product.id === id));
+    },
+    categories: (parent, args, context) => categories,
+    category: (parent, args, context) => {
+      const { id } = args;
+      return categories.find((category) => category.id === id);
+    },
+  },
+  Category: {
+    products: (parent, args, context) => {
+      const categoryId = parent.id;
+      return products.filter((product) => product.categoryId === categoryId);
     },
   },
 };
