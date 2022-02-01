@@ -8,6 +8,7 @@ exports.typeDefs = gql`
     category(id: ID!): Category
   }
   type Product {
+    id: ID!
     name: String!
     description: String!
     quantity: Int!
@@ -34,6 +35,10 @@ exports.typeDefs = gql`
     addCategory(input: addCategoryInput!): Category!
     addProduct(input: addProductInput!): Product!
     addReview(input: addReviewInput!): Review!
+    deleteCategory(id: ID!): Boolean!
+    deleteProduct(id: ID!): Boolean!
+    deleteReview(id: ID!): Boolean!
+    updateCategory(id: ID!, input: updateCategoryInput!): Category!
   }
 
   input addCategoryInput {
@@ -49,6 +54,7 @@ exports.typeDefs = gql`
     onSale: Boolean!
     categoryId: String!
   }
+
   input ProductsFilterInput {
     onSale: Boolean
     avgRating: Int
@@ -59,5 +65,8 @@ exports.typeDefs = gql`
     comment: String!
     rating: Int!
     productId: String!
+  }
+  input updateCategoryInput {
+    name: String!
   }
 `;
